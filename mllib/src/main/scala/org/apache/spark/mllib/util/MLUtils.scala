@@ -23,6 +23,7 @@ import org.apache.spark.SparkContext._
 
 import org.jblas.DoubleMatrix
 import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.classification.ClassLabeledPoint
 
 /**
  * Helper methods to load, save and pre-process data used in ML Lib.
