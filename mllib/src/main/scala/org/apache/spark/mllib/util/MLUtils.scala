@@ -48,6 +48,25 @@ object MLUtils {
       LabeledPoint(label, features)
     }
   }
+  
+  /**
+   * Load class labeled data from a file. The data format used here is
+   * <CL>, <f1> <f2> ...
+   * where <f1>, <f2> are feature values in Double and <CL> is the corresponding class label as String.
+   *
+   * @param sc SparkContext
+   * @param dir Directory to the input data files.
+   * @return An RDD of ClassLabeledPoint. Each class labeled point has two elements: the first element is
+   *         the class label, and the second element represents the feature values (an array of Double).
+   */
+  def loadClassLabeledData(sc: SparkContext, dir: String): RDD[ClassLabeledPoint] = {
+    sc.textFile(dir).map { line =>
+      val parts = line.split(',')
+      val label = parts(0)
+      val features = parts(1).trim().split(' ').map(_.toDouble)
+      ClassLabeledPoint(label, features)
+    }
+  }
 
   /**
    * Save labeled data to a file. The data format used here is
@@ -59,6 +78,19 @@ object MLUtils {
    */
   def saveLabeledData(data: RDD[LabeledPoint], dir: String) {
     val dataStr = data.map(x => x.label + "," + x.features.mkString(" "))
+    dataStr.saveAsTextFile(dir)
+  }
+  
+  /**
+   * Save class labeled data to a file. The data format used here is
+   * <CL>, <f1> <f2> ...
+   * where <f1>, <f2> are feature values in Double and <CL> is the corresponding class label as String.
+   *
+   * @param data An RDD of ClassLabeledPoints containing data to be saved.
+   * @param dir Directory to save the data.
+   */
+  def saveClassLabeledData(data: RDD[ClassLabeledPoint], dir: String) {
+    val dataStr = data.map(x => x.classLabel + "," + x.features.mkString(" "))
     dataStr.saveAsTextFile(dir)
   }
 

@@ -189,12 +189,12 @@ class PythonMLLibAPI extends Serializable {
   {
     val data = dataBytesJRDD.rdd.map(xBytes => {
       val x = deserializeDoubleVector(xBytes)
-      LabeledPoint(x(0), x.slice(1, x.length))
+      ClassLabeledPoint(x(0).toString, x.slice(1, x.length))
     })
     val model = NaiveBayes.train(data, lambda)
     val ret = new java.util.LinkedList[java.lang.Object]()
-    ret.add(serializeDoubleVector(model.pi))
-    ret.add(serializeDoubleMatrix(model.theta))
+    ret.add(serializeDoubleVector(model.pi.values.toArray))
+    ret.add(serializeDoubleMatrix(model.theta.values.toArray))
     ret
   }
 

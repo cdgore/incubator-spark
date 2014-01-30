@@ -22,7 +22,6 @@ import scala.util.Random
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.FunSuite
 
-import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.LocalSparkContext
 
 object NaiveBayesSuite {
@@ -41,7 +40,7 @@ object NaiveBayesSuite {
       pi: Array[Double],            // 1XC
       theta: Array[Array[Double]],  // CXD
       nPoints: Int,
-      seed: Int): Seq[LabeledPoint] = {
+      seed: Int): Seq[ClassLabeledPoint] = {
     val D = theta(0).length
     val rnd = new Random(seed)
 
@@ -54,17 +53,17 @@ object NaiveBayesSuite {
         if (rnd.nextDouble() < _theta(y)(j)) 1 else 0
       }
 
-      LabeledPoint(y, xi)
+      ClassLabeledPoint(y.toString, xi)
     }
   }
 }
 
 class NaiveBayesSuite extends FunSuite with LocalSparkContext {
 
-  def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
+  def validatePrediction(predictions: Seq[String], input: Seq[ClassLabeledPoint]) {
     val numOfPredictions = predictions.zip(input).count {
       case (prediction, expected) =>
-        prediction != expected.label
+        !(prediction.equals(expected.classLabel))
     }
     // At least 80% of the predictions should be on.
     assert(numOfPredictions < input.length / 5)

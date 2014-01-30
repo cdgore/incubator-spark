@@ -19,7 +19,6 @@ package org.apache.spark.mllib.classification;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.mllib.regression.LabeledPoint;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,19 +43,19 @@ public class JavaNaiveBayesSuite implements Serializable {
     System.clearProperty("spark.driver.port");
   }
 
-  private static final List<LabeledPoint> POINTS = Arrays.asList(
-    new LabeledPoint(0, new double[] {1.0, 0.0, 0.0}),
-    new LabeledPoint(0, new double[] {2.0, 0.0, 0.0}),
-    new LabeledPoint(1, new double[] {0.0, 1.0, 0.0}),
-    new LabeledPoint(1, new double[] {0.0, 2.0, 0.0}),
-    new LabeledPoint(2, new double[] {0.0, 0.0, 1.0}),
-    new LabeledPoint(2, new double[] {0.0, 0.0, 2.0})
+  private static final List<ClassLabeledPoint> POINTS = Arrays.asList(
+    new ClassLabeledPoint("ClassA", new double[] {1.0, 0.0, 0.0}),
+    new ClassLabeledPoint("ClassA", new double[] {2.0, 0.0, 0.0}),
+    new ClassLabeledPoint("ClassB", new double[] {0.0, 1.0, 0.0}),
+    new ClassLabeledPoint("ClassB", new double[] {0.0, 2.0, 0.0}),
+    new ClassLabeledPoint("ClassC", new double[] {0.0, 0.0, 1.0}),
+    new ClassLabeledPoint("ClassC", new double[] {0.0, 0.0, 2.0})
   );
 
-  private int validatePrediction(List<LabeledPoint> points, NaiveBayesModel model) {
+  private int validatePrediction(List<ClassLabeledPoint> points, NaiveBayesModel model) {
     int correct = 0;
-    for (LabeledPoint p: points) {
-      if (model.predict(p.features()) == p.label()) {
+    for (ClassLabeledPoint p: points) {
+      if (model.predict(p.features()).equals(p.classLabel())) {
         correct += 1;
       }
     }
@@ -65,7 +64,7 @@ public class JavaNaiveBayesSuite implements Serializable {
 
   @Test
   public void runUsingConstructor() {
-    JavaRDD<LabeledPoint> testRDD = sc.parallelize(POINTS, 2).cache();
+    JavaRDD<ClassLabeledPoint> testRDD = sc.parallelize(POINTS, 2).cache();
 
     NaiveBayes nb = new NaiveBayes().setLambda(1.0);
     NaiveBayesModel model = nb.run(testRDD.rdd());
@@ -76,7 +75,7 @@ public class JavaNaiveBayesSuite implements Serializable {
 
   @Test
   public void runUsingStaticMethods() {
-    JavaRDD<LabeledPoint> testRDD = sc.parallelize(POINTS, 2).cache();
+    JavaRDD<ClassLabeledPoint> testRDD = sc.parallelize(POINTS, 2).cache();
 
     NaiveBayesModel model1 = NaiveBayes.train(testRDD.rdd());
     int numAccurate1 = validatePrediction(POINTS, model1);
