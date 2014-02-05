@@ -21,14 +21,14 @@ import org.scalatest.FunSuite
 
 class DistanceSuite extends FunSuite {
 
-  test("Euclidean Distance Test") {
+  test("squared Euclidean distance with known results") {
     assert(MLUtils.squaredDistance(Array(1.0, 1.0, 1.0), Array(0.0, 0.0, 0.0)) === 3.0)
     intercept[java.lang.IllegalArgumentException] {
       MLUtils.squaredDistance(Array(1.0, 1.0, 1.0), Array(0.0, 0.0))
     }
   }
   
-  test("Cosine Distance Test") {
+  test("cosine distance with known results") {
     assert(MLUtils.cosineDistance(Array(1.0, 2.0, 3.0), Array(1.0, 1.5, 4.0)) == (1.0 - 16.0/(math.sqrt(14.0)*math.sqrt(19.25))))
     intercept[java.lang.IllegalArgumentException] {
       MLUtils.cosineDistance(Array(1.0, 2.0, 3.0), Array(1.0, 1.5))
