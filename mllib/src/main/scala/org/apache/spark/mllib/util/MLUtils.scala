@@ -120,4 +120,21 @@ object MLUtils {
     }
     sum
   }
+  
+  def cosineDistance(v1: Array[Double], v2: Array[Double]): Double = {
+    if (v1.length != v2.length) {
+      throw new IllegalArgumentException("Vector sizes don't match")
+    }
+    var i = 0
+    var v1DotV2Sum = 0.0
+    var v1DotV1Sum = 0.0
+    var v2DotV2Sum = 0.0
+    while (i < v1.length) {
+      v1DotV2Sum += (v1(i) * v2(i))
+      v1DotV1Sum += (v1(i) * v1(i))
+      v2DotV2Sum += (v2(i) * v2(i))
+      i += 1
+    }
+    1.0 - (v1DotV2Sum / (math.sqrt(v1DotV1Sum) * math.sqrt(v2DotV2Sum)))
+  }
 }
