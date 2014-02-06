@@ -135,6 +135,6 @@ object MLUtils {
       v2DotV2Sum += (v2(i) * v2(i))
       i += 1
     }
-    1.0 - (v1DotV2Sum / (math.sqrt(v1DotV1Sum) * math.sqrt(v2DotV2Sum)))
+    1.0 - (v1DotV2Sum / (math.sqrt(v1DotV1Sum * v2DotV2Sum)))
   }
 }
